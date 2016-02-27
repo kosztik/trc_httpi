@@ -66,12 +66,22 @@ extern double MicroLotBalance=0;
 extern string S4="Lot mapping: source lot1=destination lot1,source lot2=destination lot2";
 extern string S4a="If not given a pair, lot will recalculate with LotKoef and ForceLot";
 extern string LotMapping="0.01=0.01,0.02=0.02";
+extern string S4b="Progressive Lot on(1) or off(0)";
+extern int ProgressiveLot=0;
 extern int delay=1000;
 extern double PipsTolerance=5;
 extern int magic=20111219;
 extern string Prefix="";
 extern string Suffix="";
 extern bool CopyDelayedTrades=false;
+extern string comment0 = "########### these settings belongs to ProgressiveLot ############";
+extern string comment1 = "1- micro, 2- mini, 3- normal";
+extern string comment2 = "1 pip=$0.001, 1 pip=$0.01, 1 pip=$0.1";
+extern int accountType = 2;
+extern int riskInPercent = 5;
+extern string comment3 = "For ex. xm micro accounts where 0.1L = 1 microL so the lotModifier 10";
+extern int lotModifier = 0;
+extern int SLinFPips = 400;
 
 string db = "TradeCopy.db";
    
@@ -82,7 +92,7 @@ int cnt,TotalCounter=-1;
 int mp=1;
 string cmt;
 string nl="\n";
-
+double riskedMoney;
 
 int OrdId[],RealOrdId[];
 string OrdSym[],RealOrdSym[];
@@ -345,6 +355,26 @@ void parse_s() {
 }
 
 
+double LotCalculate() {
+   int ratio;
+   double calculatedLot;
+   // kiszamolom a equity risInPercent százalékát
+   riskedMoney = (AccountEquity() * riskInPercent) / 100;
+   
+   switch ( accountType )                           // Operator header 
+      {                                          // Opening brace
+      case 1: ratio = 100; break;                   // One of the 'case' variations 
+      case 2: ratio = 10;  break;                  // One of the 'case' variations 
+      case 3: ratio = 1;   break;
+      //[default: Operators]                        // Variation without any parameter
+      }   
+      
+   calculatedLot = (0.1*riskedMoney) /(SLinFPips/ratio) ;
+   if (lotModifier>0) calculatedLot = calculatedLot * lotModifier;
+   
+  return( NormalizeDouble(calculatedLot, 2) );    
+}
+
 double LotVol(double lot,string symbol) {
 
 
@@ -377,6 +407,10 @@ double LotVol(double lot,string symbol) {
    
       }
 
+  }
+  
+  if (ProgressiveLot > 0) {
+      lot= LotCalculate();
   }
 
 
