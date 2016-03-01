@@ -23,9 +23,9 @@
 
 /*
    2015.05.01
-      A módosításom itt, hogy az eredeti egy fájlba írja a kereskedéseket, az
-      itteni verzió pedig httpGET paranccsal egy php fájl hív meg egy szerveren
-      ami egy adatbázisba írja be ezeket az adatokat.
+      A mÃ³dosÃ­tÃ¡som itt, hogy az eredeti egy fÃ¡jlba Ã­rja a kereskedÃ©seket, az
+      itteni verziÃ³ pedig httpGET paranccsal egy php fÃ¡jl hÃ­v meg egy szerveren
+      ami egy adatbÃ¡zisba Ã­rja be ezeket az adatokat.
       
       pl. string http_result = httpGET("url.php");
 
@@ -34,7 +34,7 @@
 
 #include <mq4-http.mqh>
 
-#property copyright "Copyright © 2011, Syslog.eu, rel. 2012-01-04"
+#property copyright "Copyright Â© 2011, Syslog.eu, rel. 2012-01-04"
 #property link      "http://syslog.eu"
 
 extern string cutStringFromSym="";
@@ -79,7 +79,7 @@ int init()
    //FileClose(handle);
    
    // kosztik: Amikor inditjuk az EA-t akkor be kell toltenie a szerverrol a tarolt kereskedeseket
-   load_positions();
+   get_positions();
    
    Print ( PrevSize);
 //----
@@ -106,9 +106,9 @@ int start() {
     get_positions();
     if(compare_positions()) {
          // Print ("Van mentes");
-         save_positions(); // vagyis csak akkor ment, amikor változás van!
+         save_positions(); // vagyis csak akkor ment, amikor vÃ¡ltozÃ¡s van!
     } else {
-         // Print ("nincs ment�s mert minde ua.");
+         // Print ("nincs mentés mert minde ua.");
     }
     Comment(cmt);
     TickCount=GetTickCount()-start;
@@ -191,7 +191,7 @@ void save_positions() {
     PrevOrdTP[i]=OrdTP[i];
   }
 
-  // Size: hány aktív kereskedésünk van éppen. Ezt minden alkalommal újra és újra kiírja.
+  // Size: hÃ¡ny aktÃ­v kereskedÃ©sÃ¼nk van Ã©ppen. Ezt minden alkalommal Ãºjra Ã©s Ãºjra kiÃ­rja.
   
   int handle=FileOpen("TradeCopy.csv",FILE_CSV|FILE_WRITE,",");
   if(handle>0) {
@@ -204,7 +204,7 @@ void save_positions() {
     }
     FileClose(handle);
    
-    // itt lehetne figyelni a visszatérést, amit az init.cgi ad esetleges hiba esetén
+    // itt lehetne figyelni a visszatÃ©rÃ©st, amit az init.cgi ad esetleges hiba esetÃ©n
     //Print("http://alfa.triak.hu/trc/cgi-bin/init.cgi",httpstring);
    
       httpGET("http://mail.webkelet.hu:85/init.cgi"+httpstring);    
@@ -212,8 +212,8 @@ void save_positions() {
   }else Print("File open has failed, error: ",GetLastError());
 
   /*
-      A fenti FileWrite íráskor össze kell állítanom egy hosszú stringet. Ebben benne van az összes trade.
-      Ezt küldöm el, a httpGET hívással a szervernek. Ami lejegyzi a kereskedéseket mysql adatbázisba!
+      A fenti FileWrite Ã­rÃ¡skor Ã¶ssze kell Ã¡llÃ­tanom egy hosszÃº stringet. Ebben benne van az Ã¶sszes trade.
+      Ezt kÃ¼ldÃ¶m el, a httpGET hÃ­vÃ¡ssal a szervernek. Ami lejegyzi a kereskedÃ©seket mysql adatbÃ¡zisba!
       
       A string:
       ?t=OrdId[i],OrdSym[i],OrdTyp[i],OrdLot[i],OrdPrice[i],OrdSL[i],OrdTP[i],kib,
@@ -230,7 +230,7 @@ void save_positions() {
    
 //+------------------------------------------------------------------+
  
-// Kosztik �ltal �trakott szubrutinok a TradeCopySlave-bol
+// Kosztik által átrakott szubrutinok a TradeCopySlave-bol
 
 void load_positions() {
   
@@ -264,7 +264,7 @@ void load_positions() {
   */
   
   
-  // hibakezelés! ha nincs result!
+  // hibakezelÃ©s! ha nincs result!
   http_result = httpGET("http://mail.webkelet.hu:85/select.cgi");
   
   http_result1=StringSubstr(http_result, 0, StringLen(http_result)-1 );
@@ -348,9 +348,9 @@ double LotVol(double lot,string symbol) {
     lot=lot*LotKoef;
   }
   
-  // LotMapping alapján újrakalkulálom a lot értékeket
-  // Ha azonban itt nincs egyező pár akkor érintetlen marad
-  // Az alap string amúgy is értintetlenül hagyja a lot -ot
+  // LotMapping alapjÃ¡n ÃºjrakalkulÃ¡lom a lot Ã©rtÃ©keket
+  // Ha azonban itt nincs egyezÅ pÃ¡r akkor Ã©rintetlen marad
+  // Az alap string amÃºgy is Ã©rtintetlenÃ¼l hagyja a lot -ot
   if (StringLen(LotMapping)>2) {
       int LotMapString1Width =StringSplit(LotMapping, u_sep1, ArrayLotMap1);
     
@@ -358,7 +358,7 @@ double LotVol(double lot,string symbol) {
    
          int LotMapString2Width =StringSplit(ArrayLotMap1[i], u_sep2, ArrayLotMap2);
    
-         // ha a map pár első eleme egyenlo a paraméterként adott lottal, akkor a második eleme szerint alakul a lot!
+         // ha a map pÃ¡r elsÅ eleme egyenlo a paramÃ©terkÃ©nt adott lottal, akkor a mÃ¡sodik eleme szerint alakul a lot!
          if (lot == (double)ArrayLotMap2[0]) lot=(double)ArrayLotMap2[1];
    
       }
@@ -375,7 +375,7 @@ double LotVol(double lot,string symbol) {
     }
   }
 //  Print("Calculated lot size: ",lot);
-  // Print ("A következő lot méretet használom: "+lot);
+  // Print ("A kÃ¶vetkezÅ lot mÃ©retet hasznÃ¡lom: "+lot);
   return(NormalizeDouble(lot,DigitsMinLot(symbol)));
 }  
  
